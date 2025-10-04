@@ -1,0 +1,44 @@
+.process-button
+  border: none
+  border-radius: 6px
+  cursor: pointer
+  font-weight: 600
+  transition: all 0.2s ease
+  display: inline-flex
+  align-items: center
+  justify-content: center
+  width: auto   // ✅ solo el ancho necesario
+  max-width: fit-content
+  min-width: 100px
+  height: 40px
+
+  &.success
+    background-color: #28a745
+    color: white
+    &:hover
+      background-color: #218838
+
+  &.warning
+    background-color: #ffc107
+    color: #333
+    &:hover
+      background-color: #e0a800
+
+  &.danger
+    background-color: #dc3545
+    color: white
+    &:hover
+      background-color: #c82333
+
+  // Tamaños
+  &.sm
+    padding: 0.3rem 1rem
+    font-size: 0.85rem
+
+  &.md
+    padding: 0.5rem 1.2rem
+    font-size: 1rem
+
+  &.lg
+    padding: 0.7rem 2rem
+    font-size: 1.2rem

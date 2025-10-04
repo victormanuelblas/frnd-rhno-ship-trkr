@@ -1,0 +1,171 @@
+// 🎨 Estilos base (compartidos)
+.info-content
+  width: 100%
+  max-width: 1300px
+  margin: 0 auto
+  padding: 1rem
+
+  h1
+    margin-bottom: 1.5rem
+    font-size: 1.8rem
+    font-weight: bold
+    text-align: center
+
+form
+  display: flex
+  flex-direction: column
+  gap: 2rem
+
+.info-elements
+  display: grid
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr))
+  gap: 1.5rem
+  padding: 1rem
+  border: 1px solid
+  border-radius: 8px
+
+  label
+    font-weight: 600
+    margin-bottom: 0.3rem
+
+  input, select
+    width: 100%
+    padding: 0.6rem
+    border: 1px solid
+    border-radius: 6px
+    font-size: 1rem
+
+    &:focus
+      outline: none
+      border-width: 2px
+
+// 🌞 Tema claro
+.light-theme
+  background: #f5f5f5
+  color: #222
+
+  .info-elements
+    border-color: #ddd
+    background: #fff
+
+    label
+      color: #222
+
+    input, select
+      background: #fff
+      color: #222
+      border-color: #ccc
+
+      &:focus
+        border-color: #0077cc
+        background: #eef6ff
+
+// 🌙 Tema oscuro
+.dark-theme
+  background: #111
+  color: #f5f5f5
+
+  .info-elements
+    border-color: #333
+    background: #1e1e1e
+
+    label
+      color: #eaeaea
+
+    input, select
+      background: #2a2a2a
+      color: #f5f5f5
+      border-color: #555
+
+      &:focus
+        border-color: #4cafef
+        background: #333
+// 📱 Vista móvil
+@media (max-width: 600px)
+  .info-elements
+    grid-template-columns: 1fr
+
+.items-section
+  margin-top: 20px
+  padding: 15px
+  border-radius: 12px
+  background: var(--bg-box)
+  border: 1px solid var(--border-color)
+
+  h2
+    margin-bottom: 10px
+    font-size: 18px
+    font-weight: 600
+
+.light
+  --bg-box: #f9f9f9
+  --border-color: #ccc
+  --bg-item: #fff
+
+.dark
+  --bg-box: #2a2a2a
+  --border-color: #555
+  --bg-item: #1e1e1e
+.items-table
+  width: 100%
+  border-collapse: collapse
+  margin-top: 12px
+
+  th, td
+    padding: 8px 10px
+    border: 1px solid var(--border-color)
+    text-align: center
+
+  th
+    background: var(--bg-header)
+    font-weight: bold
+
+  tr:nth-child(even)
+    background: var(--bg-row)
+
+.light
+  --border-color: #ccc
+  --bg-header: #f0f0f0
+  --bg-row: #fafafa
+
+.dark
+  --border-color: #555
+  --bg-header: #2a2a2a
+  --bg-row: #1e1e1e
+
+.delete-btn
+  background: transparent
+  border: none
+  cursor: pointer
+  font-size: 16px
+  color: crimson
+
+.add-item-btn
+  background: none
+  border: none
+  color: var(--primary)   // se adapta a tu tema
+  font-size: 0.95rem
+  cursor: pointer
+  text-decoration: underline
+  display: flex
+  align-items: center
+  gap: 6px
+
+  &:hover
+    color: var(--primary-hover)  // puedes definir un tono más oscuro
+    text-decoration: none
+.actions
+    margin-top: 1.5rem
+
+    .btn-back
+      background: #2563eb
+      color: #fff
+      border: none
+      padding: 0.6rem 1.2rem
+      border-radius: 0.5rem
+      cursor: pointer
+      font-size: 0.9rem
+      transition: background 0.2s ease-in-out
+
+      &:hover
+        background: #1e40af
