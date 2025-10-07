@@ -1,11 +1,12 @@
 //HEADER
 header
     width: 100%
-    max-width: 1300px
+    //max-width: 1300px
     margin: 0 auto
     padding: 0 0.2rem
     display: flex
     flex-direction: column
+    border: 1px solid green
     #welcome
         display: flex
         height: 40px
@@ -56,9 +57,9 @@ header
             display: block
         .menu
             position: fixed
-            width: 100%
-            height: 100vh
-            background: #050505
+            width: 96%
+            height: 50%
+            background: #acc1ee
             right: -100%
             top: 0
             text-align: center
@@ -67,6 +68,7 @@ header
             transition: 0.8s
             a
                 display: block
+                height: 40px
                 padding: 20px
         .esconder-menu
             position: absolute

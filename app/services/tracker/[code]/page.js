@@ -30,7 +30,6 @@ export default function ServicioDetalle() {
 
   if (loading) return <AvisoCargando />;
   if (error) return <AvisoError msg={`Ops! ${error}`} />;
-console.log("Data:", data);
 
   return (
     <div className="service-content">
@@ -44,7 +43,7 @@ console.log("Data:", data);
           </p>
           <p>
             <b>Guia</b>
-            <span>{service[0][0].servGuia}</span>
+            <span>{service[0][0].servClientGuia}</span>
           </p>
           <p>
             <b>Origen</b>
@@ -77,7 +76,7 @@ console.log("Data:", data);
             <span>{service[0][0].servDestinyAddresses}</span>
           </p>
         </section>
-        <h3>Recepcion</h3>
+        <h3>Recepción</h3>
         <section className="service-items">
           <p>
             <b>Nombre</b>
@@ -117,9 +116,6 @@ console.log("Data:", data);
         </section>
         </>
       )}
-      <section>
-        <Link href="/servicescontent">← Volver al listado</Link>
-      </section>
       
     </div>
   );

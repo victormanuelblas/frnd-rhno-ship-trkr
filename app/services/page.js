@@ -1,8 +1,8 @@
 'use client';
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import './style.sass';
-import { formatDate, getCurrenDate, getMinDate } from '@/utils/tools'
+import { formatDate, getCurrentDate, getMinDate } from '@/utils/tools'
 import AvisoCargando from "@/components/recursos/cargando";
 import AvisoError from "@/components/recursos/error";
 import useFetch from "@/hooks/useFetch";
@@ -11,76 +11,148 @@ import { Pencil, RefreshCw, Clipboard } from "lucide-react";
 import { useForm } from "react-hook-form";
 import TextInput from "@/components/recursos/textInput";
 import DateInput from "@/components/recursos/dateInput";
+import SelectInput from "@/components/recursos/selectInput";
+
+const pageSize = 10;
+
+const servStcnls = [
+    {
+        id: 1,
+        name: "Registrado"
+    },
+    {
+        id: 2,
+        name: "Embalado"
+    },
+    {
+        id: 3,
+        name: "Despachado"
+    },
+      {
+        id: 4,
+        name: "Transito"
+    },
+      {
+        id: 5,
+        name: "LlegadaDestino"
+    },
+      {
+        id: 6,
+        name: "Entregado"
+    },
+  
+      {
+        id: 7,
+        name: "Devuelto"
+    },
+  ]
 
 export default function ServicesPage() {
   useThemeByHour();
+
+  const filtersRef = useRef({
+    owner: 1,
+    dateini: getMinDate(7),
+    datefin: getCurrentDate(),
+    servstte: "",
+    clinname: "",
+    clinguia: "",
+  });
 
   const [services, setServices] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [copiedCode, setCopiedCode] = useState(null); 
 
-  const { register, handleSubmit, watch } = useForm({
-    defaultValues: {
-      owner: 1,
-      usrid: 1,
-      dateini: getMinDate(7),       // fecha inicio
-      datefin: getCurrenDate(),       // fecha fin
-      clinname: "",        // cliente
-      clinguia: "",   // guía de cliente
-    }
+  const { register, handleSubmit } = useForm({
+    defaultValues: filtersRef.current,
   });
 
-  const filters = watch();
-
   const [{ data, loading, error }, reload] = useFetch(
-    { path: "serv", queryParams: { owner: 1, ...filters }},
+    { path: "serv", queryParams: { ...filtersRef.current,  pagenumb: 1 }},
     null,
     "GET",
-    true,
+    false,
+    () => {
+
+    }
   );
 
-   // 👇 controlamos la actualización de services con useEffect
   useEffect(() => {
-    if (data) setServices(data);
+    reload({
+      queryParams: { ...filtersRef.current, pagenumb: 1 },
+    });
+  }, []);
+
+  useEffect(() => {
+    if (data && data.length > 0) {
+      setServices(data);
+      const totalRecords = Number(data[0].servRecords || 0);
+      setTotalPages(Math.max(1, Math.ceil(totalRecords / pageSize)));
+    } else if (data && data.length === 0) {
+      setServices([]);
+      setTotalPages(1);
+    }
   }, [data]);
 
   if (loading) return <AvisoCargando />;
   if (error) return <AvisoError />;
 
   const copyToClipboard = (code) => {
-    const fullUrl = `${window.location.origin}/servicescontent/tracker/${code}`;
+    const fullUrl = `${window.location.origin}/services/tracker/${code}`;
     navigator.clipboard.writeText(fullUrl).then(() => {
       setCopiedCode(code);
       setTimeout(() => setCopiedCode(null), 2000); // tooltip se oculta en 2s
     });
   };
   
+  const handleFilterSubmit = (formData) => {
+    filtersRef.current = { ...formData};
+    setPage(1);
+console.log('handleFilterSubmit formData: ', formData);    
+console.log('handleFilterSubmit filtersRes.current: ', filtersRef.current);
+
+    reload({
+      queryParams: {
+        ...filtersRef.current,
+        pagenumb: 1,
+      },
+    });
+  };
+
+  const handlePage = (action) => {
+    if (loading) return;
+
+    const newPage =
+      action === "a"
+        ? Math.min(page + 1, totalPages)
+        : Math.max(page - 1, 1);
+
+    if (newPage === page) return;
+
+    setPage(newPage);
+
+    reload({
+      queryParams: {
+        ...filtersRef.current,
+        pagenumb: newPage,
+      },
+    });
+  };
+
   return (
     <>
     <div className="services-content">
       <div className="services-header">
         <h1>Servicios</h1>
-        <Link href="/servicescontent/info">
+        <Link href="/services/info">
           <button className="btn-new-service">
             + Nuevo Servicio
           </button>
         </Link>
       </div>
       <section className="filters-section">
-        <form
-          onSubmit={handleSubmit((formData) => {
-            reload({
-              queryParams: {
-                owner: 1,
-                dateini: formData.dateIni,
-                datefin: formData.dateFin,
-                client: formData.client,
-                clientGuide: formData.clientGuide,
-              },
-            });
-          })}
-        >
+        <form onSubmit={handleSubmit(handleFilterSubmit)}>
           <div className="filters-row">
             <DateInput
               label="Fecha Inicio"
@@ -91,6 +163,13 @@ export default function ServicesPage() {
               label="Fecha Fin"
               name="datefin"
               register={register}
+            />
+            <SelectInput
+              label="Estado"
+              name="servstte"
+              register={register}
+              options={servStcnls}
+              placeholder="—Todos—"
             />
             <TextInput
               label="Cliente"
@@ -130,7 +209,7 @@ export default function ServicesPage() {
               {services.map((serv, i) => (
                 <tr key={i}>
                   <td>{formatDate(serv.servDate)}</td>
-                  <td>{serv.servOriginName}</td>
+                  <td>{serv.servId}</td>
                   <td>{serv.servClientName}</td>
                   <td>{serv.servDestinyName}</td>
                   <td>{serv.servDestinyAddresses}</td>
@@ -139,7 +218,7 @@ export default function ServicesPage() {
                   <td className="actions-cell">
                   {/* Editar */}
                   <div className="tooltip-wrapper">
-                    <Link href={`/servicescontent/info/${serv.servId}`}>
+                    <Link href={`/services/info/${serv.servId}`}>
                       <Pencil size={18} />
                     </Link>
                     <span className="tooltip-text">Editar</span>
@@ -147,7 +226,7 @@ export default function ServicesPage() {
 
                   {/* Actualizar eventos */}
                   <div className="tooltip-wrapper">
-                    <Link href={`/servicescontent/events/${serv.servCode}`}>
+                    <Link href={`/services/trackerevent/${serv.servCode}`}>
                       <RefreshCw size={18} />
                     </Link>
                     <span className="tooltip-text">Actualizar eventos</span>
@@ -159,7 +238,7 @@ export default function ServicesPage() {
                       <Clipboard size={18} />
                     </button>
                     <span className="tooltip-text">
-                      {copiedCode === serv.servCode ? "Copiado ✅" : "Copiar link"}
+                      {copiedCode === serv.servCode ? "Copiado" : "Copiar link"}
                     </span>
                   </div>
                 </td>
@@ -169,14 +248,14 @@ export default function ServicesPage() {
           </table>
         </div>
         <div className="pagination">
-          <button onClick={() => setPage(p => p - 1)} disabled={page === 1}>
+          <button onClick={() => handlePage('r')} disabled={page === 1}>
             &laquo; Anterior
           </button>
           <span>
             Página {page} de {totalPages}
           </span>
           <button
-            onClick={() => setPage(p => p + 1)}
+            onClick={() => handlePage('a')}
             disabled={page === totalPages}
           >
             Siguiente &raquo;

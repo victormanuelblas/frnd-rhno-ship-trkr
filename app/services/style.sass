@@ -73,6 +73,49 @@
   box-shadow: 0 4px 8px rgba(0,0,0,0.1)
   overflow: hidden
   border: 1px solid #ddd
+  width: 100%
+
+  table
+    width: 100%
+    border-collapse: collapse
+    font-size: 0.9rem
+
+  th, td
+    padding: 0.8rem
+    text-align: left
+    border-bottom: 1px solid #ddd
+
+  th
+    background-color: var(--table-header-bg)
+    color: var(--table-header-color)
+    font-weight: 600
+    text-transform: uppercase
+    font-size: 0.8rem
+
+  tr:nth-child(even)
+    background-color: var(--table-row-even)
+  tr:nth-child(odd)
+    background-color: var(--table-row-odd)
+
+  // 🟢 Responsivo: permite desplazamiento horizontal en móviles
+  @media (max-width: 900px)
+    overflow-x: auto
+    border-radius: 8px
+    -webkit-overflow-scrolling: touch
+    display: block // fuerza el scroll del contenedor
+
+    table
+      width: 900px // ancho mínimo que forzará el scroll horizontal
+      min-width: 900px
+
+  // 🧩 Scrollbar estilizado
+  &::-webkit-scrollbar
+    height: 8px
+  &::-webkit-scrollbar-thumb
+    background-color: #ccc
+    border-radius: 8px
+  &::-webkit-scrollbar-thumb:hover
+    background-color: #aaa
 
 .services-table
   width: 100%

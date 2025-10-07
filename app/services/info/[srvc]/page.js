@@ -11,9 +11,9 @@ import useThemeByHour from "@/hooks/useThemeByHour";
 import AlertBar from "@/components/recursos/alertBar";
 import SpinnerCentral from "@/components/recursos/spinnerCentral";
 import AddItemsPopup from "@/components/recursos/addItemsPopup";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 
-import { getCurrenDate, getMinDate,getMaxDate, formatDate, formatDateYMD } from "@/utils/tools";
+import { getCurrentDate, getMinDate,getMaxDate, formatDate, formatDateYMD } from "@/utils/tools";
 
 import "./style.sass";
 
@@ -60,6 +60,7 @@ let itemsTypels = [
 
 export default function NuevoServicio() {
   useThemeByHour();
+  const router = useRouter();
 
   const params = useParams();
   const serviceId = params?.["srvc"];
@@ -76,7 +77,7 @@ export default function NuevoServicio() {
 
   const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm({
     defaultValues: {
-    servDate: getCurrenDate(),
+    servDate: getCurrentDate(),
     servBussines: 1,
     servUser: 1,
     },
@@ -286,9 +287,8 @@ export default function NuevoServicio() {
           className="add-item-btn"
           onClick={() => setShowPopup(true)}
           >
-            + Agregar Item
+          + Agregar Item
         </button>
-
 
         <table className="items-table">
           <thead>
@@ -342,17 +342,14 @@ export default function NuevoServicio() {
         <ProcessButton type="submit" variant="success" size="sm">
           Guardar Servicio
         </ProcessButton>
-        
       </section>
       </form>
-      <div className="actions">
-        <Link href="/servicescontent">
-          <button className="btn-back">
-            ← Ir al listado
-          </button>
-        </Link>
-      </div>
 
+      <div className="actions">
+        <button onClick={() => router.back()} className="btn-back">
+          ← Volver al listado
+        </button>
+      </div>
     </div>
   );
 }

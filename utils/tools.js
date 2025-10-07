@@ -8,34 +8,50 @@ const parseMoney = (numberValue, numDecimals = 2) => {
 const formatDate = (isoDate)  => {
   if (!isoDate) return "";
 
-  const date = new Date(isoDate);
+  const dateOnlyMatch = isoDate.match(/^(\d{4}-\d{2}-\d{2})(?:T00:00:00(?:\.0+)?Z)?$/);
+  if (dateOnlyMatch) {
+    const [year, month, day] = dateOnlyMatch[1].split("-");
+    return `${day.padStart(2, "0")}/${month.padStart(2, "0")}/${year}`;
+  }
 
-  return date.toLocaleDateString("es-PE", {
+  const d = new Date(isoDate);
+  return d.toLocaleDateString("es-PE", {
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
   });
 }
 
-const getMinDate = (days) => {
-  const today = new Date();
-  const minDate = new Date();
-  minDate.setDate(today.getDate() - days);
-  return minDate.toISOString().split("T")[0];
-}
+const toLocalISODate = (date) => {
+  const offset = date.getTimezoneOffset();
+  const localDate = new Date(date.getTime() - offset * 60000);
+  return localDate.toISOString().split("T")[0];
+};
 
-const getMaxDate = (days) => {
-  const today = new Date();
-  const maxDate = new Date();
-  maxDate.setDate(today.getDate() + days);
-  return maxDate.toISOString().split("T")[0];
-}
+/**
+ * Devuelve la fecha actual local (sin desfase)
+ */
+export const getCurrentDate = () => {
+  return toLocalISODate(new Date());
+};
 
-const getCurrenDate = () => {
-  const today = new Date();
-  return today.toISOString().split("T")[0]
-}
+/**
+ * Devuelve la fecha mínima restando "days" días desde hoy
+ */
+export const getMinDate = (days = 0) => {
+  const date = new Date();
+  date.setDate(date.getDate() - days);
+  return toLocalISODate(date);
+};
 
+/**
+ * Devuelve la fecha máxima sumando "days" días desde hoy
+ */
+export const getMaxDate = (days = 0) => {
+  const date = new Date();
+  date.setDate(date.getDate() + days);
+  return toLocalISODate(date);
+};
 const formatDateYMD = (date) => {
   const thisDate = new Date(date);
   return thisDate.toISOString().split("T")[0];
@@ -55,7 +71,7 @@ export {
     isArrayEqual,
     parseMoney,
     formatDate,
-    getCurrenDate,
+    getCurrentDate,
     getMinDate,
     getMaxDate,
     formatDateYMD,

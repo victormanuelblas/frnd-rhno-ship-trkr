@@ -1,6 +1,6 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/Header";
+import HeaderInnova from "@/components/HeaderInnova";
 import "./layout.sass";
 
 const geistSans = Geist({
@@ -14,15 +14,15 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Rhinoseller",
-  description: "Ideando solucionaes para negocios",
+  title: "Innova Operador Logístico",
+  description: "Aplicación de seguimiento de envíos - Rhinoseller.com",
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className="layout">
-        <Header />
+        <HeaderInnova />
           <main>
           {children}
           </main> 
