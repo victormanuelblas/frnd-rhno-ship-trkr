@@ -17,8 +17,14 @@ const eslintConfig = [
       ".next/**",
       "out/**",
       "build/**",
+      "buildedToS3/**",
       "next-env.d.ts",
     ],
+    rules: [
+      {
+      "@next/next/no-img-element": "off"
+      }
+    ]
   },
 ];
 

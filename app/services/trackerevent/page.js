@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useParams } from "next/navigation";
 import Link from "next/link";
 import "./style.sass";
 import { formatDate } from "@/utils/tools";
@@ -26,29 +25,41 @@ let returnMotivels = [
 ]
 
 export default function ServicioDetalle() {
-  const params = useParams();
-  const trackerCode = params?.code;
+    const [trackerCode, setTrackerCode] = useState("")
+
+   useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get('code');
+    if (code) {
+      setTrackerCode(code);
+    }
+  }, []);
 
   const [service, setService] = useState(null);
 
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
-  const [{ data, loading, error }] = useFetch(
+  const [rspnService,rqstService] = useFetch(
     {
       path: `evnt/view/${trackerCode}`,
       queryParams: { owner: 1, usrid: 2 },
     },
     null,
     "GET",
-    true,
+    false,
     () => {
-      setService(data);
+      if(rspnService.data[0].length > 0) setService(rspnService.data);
     }
   );
 
-  if (loading) return <AvisoCargando />;
-  if (error) return <AvisoError msg={`Ops! ${error}`} />;
+  useEffect(() => {
+    if(!trackerCode) return;
+    rqstService();
+  }, [trackerCode])
+
+  if (rspnService.loading) return <AvisoCargando />;
+  if (rspnService.error) return <AvisoError msg={`Ops! ${error}`} />;
 
   const handleOpenModal = (item) => {
     setSelectedEvent(item);

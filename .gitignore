@@ -19,7 +19,7 @@
 
 # production
 /build
-
+/buildedToS3
 # misc
 .DS_Store
 *.pem

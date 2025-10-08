@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link';
 import './style.sass'
 
 export default function HeaderInnova() {
@@ -17,10 +18,11 @@ export default function HeaderInnova() {
       <div className="header-center">
         <nav className={menuOpen ? 'open' : ''}>
           <ul>
-            <li><a href="https://transportesinnova.com/">Inicio</a></li>
-            <li><a href="https://transportesinnova.com/servicios/">Servicios</a></li>
-            <li><a href="https://transportesinnova.com/noticias/">Noticias</a></li>
-            <li><a href="https://transportesinnova.com/contacto/">Contacto</a></li>
+            <li><Link href="https://transportesinnova.com">Inicio</Link></li>
+            <li><Link href="https://transportesinnova.com/servicios">Servicios</Link></li>
+            <li><Link href="https://transportesinnova.com/noticias">Noticias</Link></li>
+            <li><Link href="https://transportesinnova.com/contacto">Contacto</Link></li>
+            <li><Link href="/">Intranet</Link></li>
           </ul>
         </nav>
 

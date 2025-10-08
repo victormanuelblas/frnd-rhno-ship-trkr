@@ -8,7 +8,7 @@
     "start": "next start",
     "export": "next export",
     "lint": "eslint",
-    "deploy:s3": "npm run build && npm run export && aws s3 sync ./out s3://innova-transport --delete"
+    "deploy:s3": "aws s3 cp buildedToS3/. s3://innova.rhinoseller.com --recursive"
   },
   "dependencies": {
     "lucide-react": "^0.544.0",

@@ -2,10 +2,11 @@
 const nextConfig = {
     output: "export",
     trailingSlash: true,
-    distDir: "build",
+    distDir: "buildedToS3",
     images: {
         unoptimized: true,
     },
+    images: { unoptimized: true }
 };
 
 export default nextConfig;

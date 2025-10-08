@@ -1,7 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { useParams } from "next/navigation";
 import useFetch from "@/hooks/useFetch";
 import TextInput from "@/components/recursos/textInput";
 import SelectInput from "@/components/recursos/selectInput";
@@ -12,7 +11,6 @@ import AlertBar from "@/components/recursos/alertBar";
 import SpinnerCentral from "@/components/recursos/spinnerCentral";
 import AddItemsPopup from "@/components/recursos/addItemsPopup";
 import { useRouter } from "next/navigation";
-
 import { getCurrentDate, getMinDate,getMaxDate, formatDate, formatDateYMD } from "@/utils/tools";
 
 import "./style.sass";
@@ -61,9 +59,18 @@ let itemsTypels = [
 export default function NuevoServicio() {
   useThemeByHour();
   const router = useRouter();
+  
+  const [serviceId, setServiceId] = useState(null);
+  const [selectedService, setSelectedService] = useState([]);
 
-  const params = useParams();
-  const serviceId = params?.["srvc"];
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const srvc = params.get('serv');
+    if (srvc) {
+      console.log('srvc: ',srvc);
+      setServiceId(srvc);
+    }
+  }, []);
 
   const [origins, setOrigins] = useState(originls);
   const [clients, setClients] = useState(clientls);
@@ -134,20 +141,36 @@ export default function NuevoServicio() {
     setValue("servItems", itemsString); // ✅ actualiza el campo oculto
   };
 
-  const [rspnSelectService] = useFetch(
-    { path: serviceId ? `serv/${serviceId}` : null },
+  const [rspnService , rqstService] = useFetch(
+    {
+      path: serviceId ? `serv/${serviceId}` : `serv`,
+      queryParams: { owner: 1, usrid: 2 },
+    },
     undefined,
     "GET",
-    !!serviceId
+    false,
+    () => {
+      setSelectedService(rspnService);
+    }
   );
 
   useEffect(() => {
-    if (rspnSelectService.data) {
-      const servData = rspnSelectService.data[0][0];
+    if(serviceId == null) return
+    rqstService()
+  }, [serviceId])
+  
+  useEffect(() => {
+    console.log('ussefect selectedService: ', selectedService);
+    
+    if(!selectedService.data) return
+    if (selectedService.data) {
+      
+      const servData = selectedService.data[0][0];
+      console.log('selectedService.data[0][0]: ', servData);
       const serv = {...servData, servDate: formatDateYMD(servData.servDate), servEtaDate: formatDateYMD(servData.servEtaDate)}       
       reset(serv);
       
-      const itms = (rspnSelectService.data[1] || []).map(i => ({
+      const itms = (selectedService.data[1] || []).map(i => ({
         id: i.itemId,
         type: i.itemType,
         qty: i.itemQnty,
@@ -161,11 +184,12 @@ export default function NuevoServicio() {
         .join("|");
         setValue("servItems", itemsString);
     }
-  }, [rspnSelectService.data, reset]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedService.data, reset]);
   
   return (
     <div className="info-content">
-      <SpinnerCentral visible={loading || rspnSelectService.loading} />
+      <SpinnerCentral visible={loading || rspnService.loading} />
       <AlertBar
         message={alertMessage.message}
         type={alertMessage.type}

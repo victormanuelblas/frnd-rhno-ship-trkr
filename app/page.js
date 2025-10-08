@@ -1,10 +1,17 @@
 "use client";
-import { useState, useEffect } from "react";
+import Link from 'next/link';
 import './style.sass'
-import Cargando from "@/components/recursos/cargando";
 
 export default function Home() {
   return (
-    <Cargando />
+    <main className="home-container">
+      <div className="welcome-box">
+        <h1>Bienvenido a Transportes Innova</h1>
+        <p>Gestiona y consulta tus servicios de forma rápida y sencilla.</p>
+        <Link href="/services" className="btn-primary">
+          Ir a Servicios
+        </Link>
+      </div>
+    </main>
   );
 }

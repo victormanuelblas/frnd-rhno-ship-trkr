@@ -82,6 +82,7 @@ export default function ServicesPage() {
     reload({
       queryParams: { ...filtersRef.current, pagenumb: 1 },
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -99,7 +100,7 @@ export default function ServicesPage() {
   if (error) return <AvisoError />;
 
   const copyToClipboard = (code) => {
-    const fullUrl = `${window.location.origin}/services/tracker/${code}`;
+    const fullUrl = `${window.location.origin}/services/tracker?code=${code}`;
     navigator.clipboard.writeText(fullUrl).then(() => {
       setCopiedCode(code);
       setTimeout(() => setCopiedCode(null), 2000); // tooltip se oculta en 2s
@@ -109,9 +110,6 @@ export default function ServicesPage() {
   const handleFilterSubmit = (formData) => {
     filtersRef.current = { ...formData};
     setPage(1);
-console.log('handleFilterSubmit formData: ', formData);    
-console.log('handleFilterSubmit filtersRes.current: ', filtersRef.current);
-
     reload({
       queryParams: {
         ...filtersRef.current,
@@ -196,11 +194,11 @@ console.log('handleFilterSubmit filtersRes.current: ', filtersRef.current);
             <thead>
               <tr>
                 <th>Fecha</th>
-                <th>Origen</th>
                 <th>Cliente</th>
                 <th>Destinatario</th>
                 <th>Direccion</th>
                 <th>Entregar en</th>
+                <th>Fec.Est.Entr.</th>
                 <th>Estado</th>
                 <th>Acciones</th>
               </tr>
@@ -209,16 +207,16 @@ console.log('handleFilterSubmit filtersRes.current: ', filtersRef.current);
               {services.map((serv, i) => (
                 <tr key={i}>
                   <td>{formatDate(serv.servDate)}</td>
-                  <td>{serv.servId}</td>
                   <td>{serv.servClientName}</td>
                   <td>{serv.servDestinyName}</td>
                   <td>{serv.servDestinyAddresses}</td>
                   <td>{serv.servDeliveredType}</td>
+                  <td>{formatDate(serv.servEtaDate)}</td>
                   <td>{serv.servStateDetail}</td>
                   <td className="actions-cell">
                   {/* Editar */}
                   <div className="tooltip-wrapper">
-                    <Link href={`/services/info/${serv.servId}`}>
+                    <Link href={`/services/info/update?serv=${serv.servId}`}>
                       <Pencil size={18} />
                     </Link>
                     <span className="tooltip-text">Editar</span>
@@ -226,7 +224,7 @@ console.log('handleFilterSubmit filtersRes.current: ', filtersRef.current);
 
                   {/* Actualizar eventos */}
                   <div className="tooltip-wrapper">
-                    <Link href={`/services/trackerevent/${serv.servCode}`}>
+                    <Link href={`/services/trackerevent?code=${serv.servCode}`}>
                       <RefreshCw size={18} />
                     </Link>
                     <span className="tooltip-text">Actualizar eventos</span>
