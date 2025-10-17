@@ -70,12 +70,11 @@ function useFetch(appRoute, requestBody, method = "GET", immediateCall = false, 
 
       if (httpMethod !== "GET") {
         const finalBody = options?.body ?? options?.requestBody ?? requestBody;
+        
         if (finalBody) {
           fetchOptions.body = typeof finalBody === "string" ? finalBody : JSON.stringify(finalBody);
         }
       }
-
-      console.log("useFetch url:", url);
 
       const rspn = await fetch(url, fetchOptions);
 

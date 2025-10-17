@@ -8,6 +8,7 @@ import useFetch from "@/hooks/useFetch";
 import AvisoCargando from "@/components/recursos/cargando";
 import AvisoError from "@/components/recursos/error";
 import ModalEvento from "@/components/services/ModalEvento";
+import ImagesSection from "@/components/services/imagesSection";
 
 let returnMotivels = [
     {
@@ -171,7 +172,7 @@ export default function ServicioDetalle() {
             return (
               <p key={item.stateId} onClick={() => handleOpenModal(item)}>
                 <b>{item.stateName}</b>
-                <img alt="" src={`/assets/tracker/${item.stateName}.png`} className={item.stateExecuted === 0 ? "bw" : ""}></img>
+                <img alt="" src={`/assets/tracker/${item.stateName.toLowerCase()}.png`} className={item.stateExecuted === 0 ? "bw" : ""}></img>
                 <span>{formatDate(item.stateExecutedDate)}</span>
               </p>
             )
@@ -186,9 +187,14 @@ export default function ServicioDetalle() {
             returnMtvs={returnMotivels}
           />
         )}
+        
+        <section>
+          <ImagesSection serviceCode={trackerCode} imgsList={service[2]} serviceId={service[0][0].servId} userId="1" businessId="1" />
+        </section>
         </>
       )}
-      <section className="actions">
+      <h2></h2>
+      <section className="section-actions">
         <Link href="/services">
           <button className="btn-back">
             ← Volver al listado

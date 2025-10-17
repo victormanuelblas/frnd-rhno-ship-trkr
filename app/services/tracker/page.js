@@ -118,7 +118,7 @@ export default function ServicioDetalle() {
             return (
               <p key={item.stateId}>
                 <b>{item.stateName}</b>
-                <img alt="" src={`/assets/tracker/${item.stateName}.png`} className={item.stateExecuted === 0 ? "bw" : ""}></img>
+                <img alt="" src={`/assets/tracker/${item.stateName.toLowerCase()}.png`} className={item.stateExecuted === 0 ? "bw" : ""}></img>
                 <span>{formatDate(item.stateExecutedDate)}</span>
               </p>
             )

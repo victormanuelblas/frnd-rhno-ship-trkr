@@ -1,0 +1,72 @@
+.images-section
+  //padding: 1rem
+  h3
+    margin-bottom: 0.5rem
+
+.images-list
+  display: flex
+  gap: 1rem
+  overflow-x: auto
+
+.thumbnail
+  display: flex
+  flex-direction: column
+  align-items: center
+  width: 100px
+  margin-left: 20px
+  margin-bottom: 20px
+  .thumb
+    border-radius: 4px
+    object-fit: cover
+    width: 100px
+    height: 100px
+  .filename
+    font-size: 0.7rem
+    text-align: center
+    margin-top: 0.2rem
+  .download-btn
+    font-size: 0.7rem
+    text-decoration: underline
+    cursor: pointer
+    margin-top: 0.2rem
+
+.upload-new
+  display: flex
+  flex-direction: column
+  justify-content: center
+  align-items: center
+  border: 1px dashed #cecece//$primary-color
+  border-radius: 4px
+  width: 100px
+  cursor: pointer
+  .plus
+    font-size: 2rem
+    line-height: 1
+  p
+    margin: 0
+    font-size: 0.75rem
+
+.upload-popup
+  position: fixed
+  top: 0
+  left: 0
+  width: 100vw
+  height: 100vh
+  background: rgba(0,0,0,0.5)
+  display: flex
+  justify-content: center
+  align-items: center
+  z-index: 1000
+
+  .popup-content
+    background: #fefefe //$bg-color
+    color: #cccccc //$text-color
+    padding: 1rem
+    border-radius: 8px
+    display: flex
+    flex-direction: column
+    align-items: center
+    gap: 0.5rem
+    .close-btn
+      align-self: flex-end
+      cursor: pointer

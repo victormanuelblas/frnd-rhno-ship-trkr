@@ -100,7 +100,7 @@ export default function ServicesPage() {
   if (error) return <AvisoError />;
 
   const copyToClipboard = (code) => {
-    const fullUrl = `${window.location.origin}/services/tracker?code=${code}`;
+    const fullUrl = `${window.location.origin}/services/tracker/?code=${code}`;
     navigator.clipboard.writeText(fullUrl).then(() => {
       setCopiedCode(code);
       setTimeout(() => setCopiedCode(null), 2000); // tooltip se oculta en 2s
