@@ -196,7 +196,7 @@ export default function ServicioDetalle() {
         )}
         
         <section>
-          <ImagesSection serviceCode={trackerCode} imgsList={service[2]} serviceId={service[0][0].servId} userId="1" businessId="1" addMore={(user.clientId == 0)} />
+          <ImagesSection serviceCode={trackerCode} imgsList={service[2]} serviceId={service[0][0].servId} userId="1" businessId="1" addMore={(user?.clientId == 0)} />
         </section>
         </>
       )}

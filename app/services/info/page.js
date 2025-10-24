@@ -176,7 +176,7 @@ export default function NuevoServicio() {
       />
 
       <h1>{serviceId ? "Editar Servicio" : "Nuevo Servicio"}</h1>
-      {(user.clientId == 0) ? 
+      {(user?.clientId == 0) ? 
         <form onSubmit={handleSubmit(onSubmit)}>
 
         <section className="info-elements">

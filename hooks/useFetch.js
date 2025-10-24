@@ -71,9 +71,9 @@ function useFetch(appRoute, requestBody, method = "GET", immediateCall = false, 
           fetchOptions.body = typeof finalBody === "string" ? finalBody : JSON.stringify(finalBody);
         }
       }
-
+      
       const rspn = await fetch(url, fetchOptions);
-
+      
       // 🔒 (opcional) redirección si no hay sesión
       
       if (rspn.status === 401) {

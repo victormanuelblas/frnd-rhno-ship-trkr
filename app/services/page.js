@@ -83,9 +83,11 @@ export default function ServicesPage() {
   );
 
   useEffect(() => {
-    reload({
-      queryParams: { ...filtersRef.current, pagenumb: 1 },
-    });
+    if(user?.clientId){
+      reload({
+        queryParams: { ...filtersRef.current, pagenumb: 1 },
+      });
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -102,6 +104,7 @@ export default function ServicesPage() {
 
   if (loading) return <AvisoCargando />;
   if (error) return <AvisoError />;
+  if (!checked) return null 
 
   const copyToClipboard = (code) => {
     const fullUrl = `${window.location.origin}/services/tracker/?code=${code}`;
@@ -142,14 +145,13 @@ export default function ServicesPage() {
     });
   };
 
-  if (!checked) return null 
   
   return (
     <>
     <div className="services-content">
       <div className="services-header">
         <h1>Servicios</h1>
-        {(user.clientId == 0) ? 
+        {(user?.clientId == 0) ? 
           <Link href="/services/info">
             <button className="btn-new-service">
               + Nuevo Servicio
@@ -195,7 +197,7 @@ export default function ServicesPage() {
             :
                ""
             }
-            {(user.clientId > 0) ? 
+            {(user?.clientId > 0) ? 
               <TextInput
                 label="Destinatario"
                 name="destname"
@@ -218,7 +220,7 @@ export default function ServicesPage() {
             <thead>
               <tr>
                 <th>Fecha</th>
-               {(user.clientId == 0) ? 
+               {(user?.clientId == 0) ? 
                   <th>Cliente</th>
                :
                ""

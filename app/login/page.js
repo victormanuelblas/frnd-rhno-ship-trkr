@@ -21,7 +21,7 @@ export default function LoginPage() {
   if (!checked) return null;
 
   // ⏩ Si ya hay usuario logueado, redirige al dashboard
-  if (user) {
+  if (user?.clientId) {
     router.replace("/"); 
     return null;
   }
