@@ -6,8 +6,10 @@ import { formatDate } from "@/utils/tools";
 import useFetch from "@/hooks/useFetch";
 import AvisoCargando from "@/components/recursos/cargando";
 import AvisoError from "@/components/recursos/error";
+import useAuthGuard from "@/hooks/useAuthGuard";
 
 export default function ServicioDetalle() {
+  useAuthGuard(false);
   const [trackerCode, setTrackerCode] = useState("")
 
    useEffect(() => {

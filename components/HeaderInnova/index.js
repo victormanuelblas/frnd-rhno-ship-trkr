@@ -1,11 +1,23 @@
 'use client'
 
 import { useState } from 'react'
-import Link from 'next/link';
+import Link from 'next/link'
+import { useDispatch, useSelector } from 'react-redux'
+import { useRouter } from 'next/navigation'
+import { logout } from '@/app/store/authSlice'
 import './style.sass'
 
 export default function HeaderInnova() {
   const [menuOpen, setMenuOpen] = useState(false)
+  const dispatch = useDispatch()
+  const router = useRouter()
+
+  const { user, token } = useSelector((state) => state.auth)
+
+  const handleLogout = () => {
+    dispatch(logout())
+    router.push('/login')
+  }
 
   return (
     <header className="client-header">
@@ -37,9 +49,15 @@ export default function HeaderInnova() {
         </button>
       </div>
 
-      <div className="header-right">
-        <img src="/assets/home/innova-phone.png" alt="Teléfono Innova" />
-      </div>
+      {token && (
+        <div className="user-session">
+          <span className="user-name">{user?.userName || 'Usuario'}</span>
+          <span className="separator">|</span>
+          <button className="logout-link" onClick={handleLogout}>
+            Cerrar sesión
+          </button>
+        </div>
+      )}
     </header>
   )
 }

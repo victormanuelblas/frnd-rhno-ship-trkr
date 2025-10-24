@@ -7,7 +7,7 @@ import "./style.sass";
 
 const imagesBucket = process.env.NEXT_PUBLIC_AWS_BUCKET || "";
 
-const ImagesSection = ({ serviceId, businessId, userId, serviceCode, imgsList = []}) => {
+const ImagesSection = ({ serviceId, businessId, userId, serviceCode, imgsList = [], addMore=false}) => {
   const [images, setImages] = useState(imgsList);
   const [showUploadPopup, setShowUploadPopup] = useState(false);
 
@@ -39,7 +39,7 @@ const ImagesSection = ({ serviceId, businessId, userId, serviceCode, imgsList = 
 
       }
 
-        {images.length <2 && 
+        {images.length <2 && addMore && 
           <div className="thumbnail upload-new" onClick={() => setShowUploadPopup(true)}>
             <div className="plus">+</div>
             <p>SUBIR NUEVO</p>

@@ -12,6 +12,8 @@ import { useForm } from "react-hook-form";
 import TextInput from "@/components/recursos/textInput";
 import DateInput from "@/components/recursos/dateInput";
 import SelectInput from "@/components/recursos/selectInput";
+import { useSelector } from 'react-redux';
+import useAuthGuard from "@/hooks/useAuthGuard";
 
 const pageSize = 10;
 
@@ -49,13 +51,17 @@ const servStcnls = [
 
 export default function ServicesPage() {
   useThemeByHour();
+  useAuthGuard(true);
+  const {user} = useSelector((state) => state.auth);
 
   const filtersRef = useRef({
     owner: 1,
+    client: user.clientId,
     dateini: getMinDate(7),
     datefin: getCurrentDate(),
     servstte: "",
     clinname: "",
+    destname: "",
     clinguia: "",
   });
 
@@ -170,17 +176,31 @@ export default function ServicesPage() {
               placeholder="—Todos—"
             />
             <TextInput
-              label="Cliente"
-              name="clinname"
-              register={register}
-              placeholder="Nombre del cliente"
-            />
-            <TextInput
               label="Guía Cliente"
               name="clinguia"
               register={register}
               placeholder="Número de guía"
             />
+            {(user.clientId == 0) ? 
+              <TextInput
+                label="Cliente"
+                name="clinname"
+                register={register}
+                placeholder="Nombre del cliente"
+              />
+            :
+               ""
+            }
+            {(user.clientId > 0) ? 
+              <TextInput
+                label="Destinatario"
+                name="destname"
+                register={register}
+                placeholder="Destinatario"
+              />
+            :
+               ""
+            }
             <button type="submit" className="btn-filter">
               Filtrar
             </button>
@@ -194,12 +214,17 @@ export default function ServicesPage() {
             <thead>
               <tr>
                 <th>Fecha</th>
-                <th>Cliente</th>
+               {(user.clientId == 0) ? 
+                  <th>Cliente</th>
+               :
+               ""
+               }
                 <th>Destinatario</th>
                 <th>Direccion</th>
                 <th>Entregar en</th>
-                <th>Fec.Est.Entr.</th>
+                <th>Fec.Estm.Entr.</th>
                 <th>Estado</th>
+                <th>Fec.Entrega</th>
                 <th>Acciones</th>
               </tr>
             </thead>
@@ -207,21 +232,29 @@ export default function ServicesPage() {
               {services.map((serv, i) => (
                 <tr key={i}>
                   <td>{formatDate(serv.servDate)}</td>
-                  <td>{serv.servClientName}</td>
+                  {(user.clientId == 0) ? 
+                    <td>{serv.servClientName}</td>
+                  :
+                  ""
+                  }
                   <td>{serv.servDestinyName}</td>
                   <td>{serv.servDestinyAddresses}</td>
                   <td>{serv.servDeliveredType}</td>
                   <td>{formatDate(serv.servEtaDate)}</td>
                   <td>{serv.servStateDetail}</td>
+                  <td>{formatDate(serv.servDeliveredDate)}</td>
                   <td className="actions-cell">
                   {/* Editar */}
-                  <div className="tooltip-wrapper">
-                    <Link href={`/services/info/update?serv=${serv.servId}`}>
-                      <Pencil size={18} />
-                    </Link>
-                    <span className="tooltip-text">Editar</span>
-                  </div>
-
+                  {(user.clientId == 0) ? 
+                    <div className="tooltip-wrapper">
+                      <Link href={`/services/info/update?serv=${serv.servId}`}>
+                        <Pencil size={18} />
+                      </Link>
+                      <span className="tooltip-text">Editar</span>
+                    </div>
+                  :
+                    ""
+                  }
                   {/* Actualizar eventos */}
                   <div className="tooltip-wrapper">
                     <Link href={`/services/trackerevent?code=${serv.servCode}`}>

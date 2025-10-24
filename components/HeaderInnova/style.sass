@@ -45,7 +45,6 @@
           &:hover
             color: #0073e6
 
-    // botón hamburguesa oculto en desktop
     .menu-toggle
       display: none
       flex-direction: column
@@ -76,6 +75,35 @@
 
       &.open span:nth-child(3)
         transform: translateY(-8px) rotate(-45deg)
+
+  .header-right
+    display: flex
+    align-items: center
+    gap: 1rem
+
+    .user-session
+      display: flex
+      flex-direction: column
+      align-items: flex-start
+      gap: 0.25rem
+
+      .user-name
+        font-size: 0.9rem
+        color: #333
+        font-weight: 500
+
+      .logout-btn
+        background-color: #0073e6
+        color: white
+        border: none
+        border-radius: 4px
+        padding: 6px 12px
+        font-size: 0.85rem
+        cursor: pointer
+        transition: background-color 0.3s ease
+
+        &:hover
+          background-color: #005bb5
 
 @media (max-width: 768px)
   .client-header
@@ -125,5 +153,53 @@
 
     .header-right
       order: 3
+      flex-direction: column
+      gap: 0.5rem
+
       img
         height: 60px
+
+.user-session
+  display: flex
+  align-items: center
+  gap: 0.6rem
+  font-size: 0.95rem
+  color: #333
+  font-weight: 500
+
+  .separator
+    color: #aaa
+
+  .logout-link
+    background: none
+    border: none
+    color: #0073e6
+    cursor: pointer
+    font-weight: 500
+    position: relative
+    padding: 0
+    transition: color 0.3s ease
+
+    &::after
+      content: ''
+      position: absolute
+      bottom: -2px
+      left: 0
+      width: 0
+      height: 2px
+      background-color: #0073e6
+      transition: width 0.3s ease
+
+    &:hover
+      color: #005bb5
+
+      &::after
+        width: 100%
+
+@media (max-width: 768px)
+  .user-session
+    flex-direction: column
+    gap: 0.4rem
+    font-size: 0.85rem
+    .separator
+      display: none

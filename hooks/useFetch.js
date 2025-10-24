@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useSelector } from 'react-redux';
 
-const BaseEndpoint = process.env.NEXT_PUBLIC_BASE_ENDPOINT; // 👈 definido en tu .env.local
+const BaseEndpoint = process.env.NEXT_PUBLIC_BASE_ENDPOINT;
 
 function useFetch(appRoute, requestBody, method = "GET", immediateCall = false, callBack) {
   const [data, setData] = useState(undefined);
@@ -11,36 +12,33 @@ function useFetch(appRoute, requestBody, method = "GET", immediateCall = false, 
   const [error, setError] = useState("");
   const router = useRouter();
 
-  // 🔹 Inicializa la carga
+  const {token} = useSelector((state) => state.auth);
+
   const init = () => {
     setData(undefined);
     setLoading(true);
     setError("");
   };
 
-  // 🔹 Ejecuta callback cuando termina la carga
   useEffect(() => {
     if (typeof data !== "undefined" && !loading && typeof callBack === "function") {
       callBack(data);
     }
   }, [loading]);
 
-  // 🔹 Llamada inmediata si corresponde
   useEffect(() => {
     if (immediateCall) {
       load();
     }
   }, []);
 
-  // 🔹 Función principal de carga (fetch)
   async function load(options = {}) {
     init();
 
     try {
-      const logn = JSON.parse(localStorage.getItem("logn"));
       const headers = {
         "Content-Type": "application/json",
-        //"X-Access-Token": `${logn?.token}`,
+        "X-Access-Token": token,
       };
 
       let url = BaseEndpoint;
@@ -48,7 +46,6 @@ function useFetch(appRoute, requestBody, method = "GET", immediateCall = false, 
       if (typeof appRoute === "object") {
         const { path, queryParams } = appRoute;
 
-        // ✅ usa los nuevos queryParams si vienen en options
         const effectiveQueryParams = options.queryParams ?? queryParams;
 
         const queryString = effectiveQueryParams
@@ -57,7 +54,6 @@ function useFetch(appRoute, requestBody, method = "GET", immediateCall = false, 
 
         url += path + queryString;
       } else {
-        // ✅ permite pasar queryParams incluso si appRoute es string
         const queryString = options.queryParams
           ? "?" + new URLSearchParams(options.queryParams).toString()
           : "";
@@ -79,12 +75,11 @@ function useFetch(appRoute, requestBody, method = "GET", immediateCall = false, 
       const rspn = await fetch(url, fetchOptions);
 
       // 🔒 (opcional) redirección si no hay sesión
-      /*
+      
       if (rspn.status === 401) {
         router.push("/login");
         return;
       }
-      */
 
       const json = await rspn.json();
       setData(json);
@@ -93,11 +88,11 @@ function useFetch(appRoute, requestBody, method = "GET", immediateCall = false, 
       console.error(err);
       setError(err.message);
 
-      /*
+      
       if (err.message.includes("Failed to fetch")) {
         router.push("/login");
       }
-      */
+      
     } finally {
       setLoading(false);
     }

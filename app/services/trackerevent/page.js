@@ -9,6 +9,8 @@ import AvisoCargando from "@/components/recursos/cargando";
 import AvisoError from "@/components/recursos/error";
 import ModalEvento from "@/components/services/ModalEvento";
 import ImagesSection from "@/components/services/imagesSection";
+import { useSelector } from 'react-redux';
+import useAuthGuard from "@/hooks/useAuthGuard";
 
 let returnMotivels = [
     {
@@ -26,7 +28,9 @@ let returnMotivels = [
 ]
 
 export default function ServicioDetalle() {
-    const [trackerCode, setTrackerCode] = useState("")
+  const {user} = useSelector((state) => state.auth);
+  useAuthGuard(true);
+  const [trackerCode, setTrackerCode] = useState("")
 
    useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -63,8 +67,10 @@ export default function ServicioDetalle() {
   if (rspnService.error) return <AvisoError msg={`Ops! ${error}`} />;
 
   const handleOpenModal = (item) => {
-    setSelectedEvent(item);
-    setShowModal(true);
+    if(user.clientId == 0){
+      setSelectedEvent(item);
+      setShowModal(true);
+    }
   };
 
   const handleCloseModal = () => {
@@ -189,7 +195,7 @@ export default function ServicioDetalle() {
         )}
         
         <section>
-          <ImagesSection serviceCode={trackerCode} imgsList={service[2]} serviceId={service[0][0].servId} userId="1" businessId="1" />
+          <ImagesSection serviceCode={trackerCode} imgsList={service[2]} serviceId={service[0][0].servId} userId="1" businessId="1" addMore={(user.clientId == 0)} />
         </section>
         </>
       )}

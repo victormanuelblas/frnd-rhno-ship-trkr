@@ -12,6 +12,8 @@ import SpinnerCentral from "@/components/recursos/spinnerCentral";
 import AddItemsPopup from "@/components/recursos/addItemsPopup";
 import { useRouter } from "next/navigation";
 import { getCurrentDate, getMinDate,getMaxDate, formatDate, formatDateYMD } from "@/utils/tools";
+import { useSelector } from 'react-redux';
+import useAuthGuard from "@/hooks/useAuthGuard";
 
 import "./style.sass";
 
@@ -58,8 +60,10 @@ let itemsTypels = [
 
 export default function NuevoServicio() {
   useThemeByHour();
+  useAuthGuard(true);
   const router = useRouter();
-  
+  const {user} = useSelector((state) => state.auth);
+
   const [serviceId, setServiceId] = useState(null);
   const [selectedService, setSelectedService] = useState([]);
 
@@ -197,180 +201,181 @@ export default function NuevoServicio() {
       />
 
       <h1>{serviceId ? "Editar Servicio" : "Nuevo Servicio"}</h1>
+      {(user.clientId == 0) ? 
+        <form onSubmit={handleSubmit(onSubmit)}>
 
-      <form onSubmit={handleSubmit(onSubmit)}>
+        <section className="info-elements">
+          <DateInput
+            label="Fecha del Servicio"
+            name="servDate"
+            register={register}
+            required={true}
+            errors={errors}
+            min={getMinDate(7)}
+            max={getMaxDate(3)}
+          />
 
-      <section className="info-elements">
-        <DateInput
-          label="Fecha del Servicio"
-          name="servDate"
-          register={register}
-          required={true}
-          errors={errors}
-          min={getMinDate(7)}
-          max={getMaxDate(3)}
-        />
+          <TextInput
+            label="Número de Guía"
+            name="servGuia"
+            register={register}
+            placeholder="Guia de envío"
+            required={true}
+            errors={errors}
+            rules={{
+              pattern: {
+                value: /^[A-Za-z0-9-]+$/, // letras, números y guion
+                message: "Solo letras, números y guion (-)"
+              },
+              maxLength: { value: 14, message: "Máximo 14 caracteres" }
+            }}
+          />
 
-        <TextInput
-          label="Número de Guía"
-          name="servGuia"
-          register={register}
-          placeholder="Guia de envío"
-          required={true}
-          errors={errors}
-          rules={{
-            pattern: {
-              value: /^[A-Za-z0-9-]+$/, // letras, números y guion
-              message: "Solo letras, números y guion (-)"
-            },
-            maxLength: { value: 14, message: "Máximo 14 caracteres" }
-          }}
-        />
+          <SelectInput
+            label="Origen"
+            name="servOrigin"
+            register={register}
+            required={true}
+            options={origins}
+            errors={errors}
+            placeholder="—Seleccione el origen—"
+          />
+          <DateInput
+            label="Fec.Est.Entrega"
+            name="servEtaDate"
+            register={register}
+            required={true}
+            errors={errors}
+            min={getMinDate(7)}
+            max={getMaxDate(3)}
+          />
 
-        <SelectInput
-          label="Origen"
-          name="servOrigin"
-          register={register}
-          required={true}
-          options={origins}
-          errors={errors}
-          placeholder="—Seleccione el origen—"
-        />
-        <DateInput
-          label="Fec.Est.Entrega"
-          name="servEtaDate"
-          register={register}
-          required={true}
-          errors={errors}
-          min={getMinDate(7)}
-          max={getMaxDate(3)}
-        />
+        </section>
+        <section className="info-elements">
+          <SelectInput
+            label="Cliente"
+            name="servClient"
+            register={register}
+            required={true}
+            options={clients}
+            errors={errors}
+            placeholder="—Seleccione el cliente—"
+          />
+          <TextInput
+            label="Guía de cliente"
+            name="servClientGuia"
+            register={register}
+            placeholder="Guía de cliente"
+            required={true}
+            errors={errors}
+          />
 
-      </section>
-      <section className="info-elements">
-        <SelectInput
-          label="Cliente"
-          name="servClient"
-          register={register}
-          required={true}
-          options={clients}
-          errors={errors}
-          placeholder="—Seleccione el cliente—"
-        />
-        <TextInput
-          label="Guía de cliente"
-          name="servClientGuia"
-          register={register}
-          placeholder="Guía de cliente"
-          required={true}
-          errors={errors}
-        />
+          <SelectInput
+            label="Entregar en"
+            name="servDeliveredType"
+            register={register}
+            required={true}
+            options={delivereds}
+            errors={errors}
+            placeholder="—Forma de entrega—"
+          />
 
-        <SelectInput
-          label="Entregar en"
-          name="servDeliveredType"
-          register={register}
-          required={true}
-          options={delivereds}
-          errors={errors}
-          placeholder="—Forma de entrega—"
-        />
+        </section>
+        <section className="info-elements">
+          <TextInput
+            label="Destinatario"
+            name="servDestinyName"
+            register={register}
+            placeholder="Nombre del destinatario"
+            required={true}
+            errors={errors}
+          />
+          <TextInput
+            label="Dirección"
+            name="servDestinyAddress"
+            register={register}
+            placeholder="Domicilio del destinatario"
+            required={true}
+            errors={errors}
+          />
+          <TextInput
+            label="Referencia"
+            name="servDestinyAddressRefr"
+            register={register}
+            placeholder="Referencia del destinatario"
+            required={false}
+            errors={errors}
+          />
+        </section>
+        <section className="info-elements items-section">
+          <h2>Contenido del servicio</h2>
 
-      </section>
-      <section className="info-elements">
-        <TextInput
-          label="Destinatario"
-          name="servDestinyName"
-          register={register}
-          placeholder="Nombre del destinatario"
-          required={true}
-          errors={errors}
-        />
-        <TextInput
-          label="Dirección"
-          name="servDestinyAddress"
-          register={register}
-          placeholder="Domicilio del destinatario"
-          required={true}
-          errors={errors}
-        />
-        <TextInput
-          label="Referencia"
-          name="servDestinyAddressRefr"
-          register={register}
-          placeholder="Referencia del destinatario"
-          required={false}
-          errors={errors}
-        />
-      </section>
-      <section className="info-elements items-section">
-        <h2>Contenido del servicio</h2>
+          <button
+            type="button"
+            className="add-item-btn"
+            onClick={() => setShowPopup(true)}
+            >
+            + Agregar Item
+          </button>
 
-        <button
-          type="button"
-          className="add-item-btn"
-          onClick={() => setShowPopup(true)}
-          >
-          + Agregar Item
-        </button>
+          <table className="items-table">
+            <thead>
+              <tr>
+                <th>Tipo</th>
+                <th>Cantidad</th>
+                <th>Peso</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {items.map((item, index) => {
+                const typeName =
+                  itemsTypes.find((t) => t.id == item.type)?.name || item.type;
+                return (
+                  <tr key={index}>
+                    <td>{typeName}</td>
+                    <td>{item.qty}</td>
+                    <td>{item.weight}</td>
+                    <td>
+                      <button
+                        type="button"
+                        className="delete-btn"
+                        onClick={() => {
+                          const newItems = items.filter((_, i) => i !== index);
+                          setItems(newItems);
+                          const itemsString = newItems
+                            .map((i) => `${i.type};${i.qty},${i.weight}`)
+                            .join("|");
+                          setValue("servItems", itemsString);
+                        }}
+                      >
+                        🗑️
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
 
-        <table className="items-table">
-          <thead>
-            <tr>
-              <th>Tipo</th>
-              <th>Cantidad</th>
-              <th>Peso</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {items.map((item, index) => {
-              const typeName =
-                itemsTypes.find((t) => t.id == item.type)?.name || item.type;
-              return (
-                <tr key={index}>
-                  <td>{typeName}</td>
-                  <td>{item.qty}</td>
-                  <td>{item.weight}</td>
-                  <td>
-                    <button
-                      type="button"
-                      className="delete-btn"
-                      onClick={() => {
-                        const newItems = items.filter((_, i) => i !== index);
-                        setItems(newItems);
-                        const itemsString = newItems
-                          .map((i) => `${i.type};${i.qty},${i.weight}`)
-                          .join("|");
-                        setValue("servItems", itemsString);
-                      }}
-                    >
-                      🗑️
-                    </button>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+          <input type="hidden" {...register("servItems")} />
+        </section>
 
-        <input type="hidden" {...register("servItems")} />
-      </section>
-
-      <AddItemsPopup
-        visible={showPopup}
-        onClose={() => setShowPopup(false)}
-        onAdd={addItem}
-      />      
-      <section>
-        <ProcessButton type="submit" variant="success" size="sm">
-          Guardar Servicio
-        </ProcessButton>
-      </section>
-      </form>
+        <AddItemsPopup
+          visible={showPopup}
+          onClose={() => setShowPopup(false)}
+          onAdd={addItem}
+        />      
+        <section>
+          <ProcessButton type="submit" variant="success" size="sm">
+            Guardar Servicio
+          </ProcessButton>
+        </section>
+        </form>      
+      : ""}
 
       <div className="actions">
-        <button onClick={() => router.back()} className="btn-back">
+        <button onClick={() => router.push("/services")}/*{() => router.back()}*/ className="btn-back">
           ← Volver al listado
         </button>
       </div>

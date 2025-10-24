@@ -12,6 +12,7 @@ import AlertBar from "@/components/recursos/alertBar";
 import SpinnerCentral from "@/components/recursos/spinnerCentral";
 import AddItemsPopup from "@/components/recursos/addItemsPopup";
 import Link from "next/link";
+import useAuthGuard from "@/hooks/useAuthGuard";
 
 import { getCurrentDate, getMinDate,getMaxDate, formatDate, formatDateYMD } from "@/utils/tools";
 
@@ -60,6 +61,7 @@ let itemsTypels = [
 
 export default function NuevoServicio() {
   useThemeByHour();
+  useAuthGuard(true);
 
   const params = useParams();
   const serviceId = params?.["srvc"];
