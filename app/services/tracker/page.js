@@ -9,7 +9,8 @@ import AvisoError from "@/components/recursos/error";
 import useAuthGuard from "@/hooks/useAuthGuard";
 
 export default function ServicioDetalle() {
-  useAuthGuard(false);
+  const {user, checked } = useAuthGuard(false)
+  
   const [trackerCode, setTrackerCode] = useState("")
 
    useEffect(() => {
@@ -39,6 +40,8 @@ export default function ServicioDetalle() {
     if(!trackerCode) return;
     rqstService();
   }, [trackerCode])
+
+  if (!checked) return null 
 
   if (rspnService.loading) return <AvisoCargando />;
   if (rspnService.error) return <AvisoError msg={`Ops! ${error}`} />;

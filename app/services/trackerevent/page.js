@@ -9,7 +9,6 @@ import AvisoCargando from "@/components/recursos/cargando";
 import AvisoError from "@/components/recursos/error";
 import ModalEvento from "@/components/services/ModalEvento";
 import ImagesSection from "@/components/services/imagesSection";
-import { useSelector } from 'react-redux';
 import useAuthGuard from "@/hooks/useAuthGuard";
 
 let returnMotivels = [
@@ -28,8 +27,8 @@ let returnMotivels = [
 ]
 
 export default function ServicioDetalle() {
-  const {user} = useSelector((state) => state.auth);
-  useAuthGuard(true);
+  const {user, checked } = useAuthGuard()
+  
   const [trackerCode, setTrackerCode] = useState("")
 
    useEffect(() => {
@@ -97,6 +96,8 @@ export default function ServicioDetalle() {
     });
   };
 
+  if (!checked) return null 
+  
   return (
     <div className="service-content">
       <h2>Detalle del servicio {trackerCode}</h2>

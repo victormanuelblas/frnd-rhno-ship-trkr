@@ -9,8 +9,7 @@ import { useFetchData } from "@/hooks/useFetchData";
 import useAuthGuard from "@/hooks/useAuthGuard";
 
 export default function LoginPage() {
-  useAuthGuard(false);
-
+  const { user, checked } = useAuthGuard(false); // PÁGINA PÚBLICA
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -18,64 +17,66 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  // 🚫 Bloquea render hasta que el guard revise sesión
+  if (!checked) return null;
+
+  // ⏩ Si ya hay usuario logueado, redirige al dashboard
+  if (user) {
+    router.replace("/"); 
+    return null;
+  }
+
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  setLoading(true);
-  setError("");
+    e.preventDefault();
+    setLoading(true);
+    setError("");
 
-  try {
-    console.log("Iniciando login...");
-    const loginResult = await useFetchData({
-      path: "auth/login",
-      method: "POST",
-      body: form,
-    });
+    try {
+      const loginResult = await useFetchData({
+        path: "auth/login",
+        method: "POST",
+        body: form,
+      });
 
-    console.log("loginResult:", loginResult);
+      if (loginResult.error || !loginResult.data?.token) {
+        setError(loginResult.data?.message || "Credenciales inválidas");
+        setLoading(false);
+        return;
+      }
 
-    if (loginResult.error || !loginResult.data?.token) {
-      setError(loginResult.data?.message || "Credenciales inválidas");
-      setLoading(false);
-      return;
-    }
+      const token = loginResult.data.token;
 
-    const token = loginResult.data.token;
-
-    console.log("Buscando perfil...");
-    const profileResult = await useFetchData({
-      path: "auth/profile",
-      method: "GET",
-      token,
-    });
-
-    console.log("profileResult:", profileResult);
-
-    if (profileResult.error || !profileResult.data) {
-      setError("Error al cargar perfil");
-      setLoading(false);
-      return;
-    }
-
-    dispatch(
-      setCredentials({
+      const profileResult = await useFetchData({
+        path: "auth/profile",
+        method: "GET",
         token,
-        user: {
-          userId: profileResult.data.userId,
-          userLevel: profileResult.data.userLevel,
-          clientId: profileResult.data.clientId,
-          bussinesId: profileResult.data.bussinesId,
-          userName: profileResult.data.userName,
-          userMail: profileResult.data.userEmail,
-        },
-      })
-    );
+      });
 
-    console.log("Login exitoso 🚀");
-    router.push("/");
+      if (profileResult.error || !profileResult.data) {
+        setError("Error al cargar perfil");
+        setLoading(false);
+        return;
+      }
+
+      dispatch(
+        setCredentials({
+          token,
+          user: {
+            userId: profileResult.data.userId,
+            userLevel: profileResult.data.userLevel,
+            clientId: profileResult.data.clientId,
+            bussinesId: profileResult.data.bussinesId,
+            userName: profileResult.data.userName,
+            userMail: profileResult.data.userEmail,
+          },
+        })
+      );
+
+      router.push("/");
     } catch (err) {
       console.error("Error en login:", err);
       setError("Error interno del servidor");

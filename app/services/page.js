@@ -12,7 +12,6 @@ import { useForm } from "react-hook-form";
 import TextInput from "@/components/recursos/textInput";
 import DateInput from "@/components/recursos/dateInput";
 import SelectInput from "@/components/recursos/selectInput";
-import { useSelector } from 'react-redux';
 import useAuthGuard from "@/hooks/useAuthGuard";
 
 const pageSize = 10;
@@ -51,12 +50,11 @@ const servStcnls = [
 
 export default function ServicesPage() {
   useThemeByHour();
-  useAuthGuard(true);
-  const {user} = useSelector((state) => state.auth);
+  const {user, checked } = useAuthGuard()
 
   const filtersRef = useRef({
     owner: 1,
-    client: user.clientId,
+    client: user?.clientId,
     dateini: getMinDate(7),
     datefin: getCurrentDate(),
     servstte: "",
@@ -144,16 +142,22 @@ export default function ServicesPage() {
     });
   };
 
+  if (!checked) return null 
+  
   return (
     <>
     <div className="services-content">
       <div className="services-header">
         <h1>Servicios</h1>
-        <Link href="/services/info">
-          <button className="btn-new-service">
-            + Nuevo Servicio
-          </button>
-        </Link>
+        {(user.clientId == 0) ? 
+          <Link href="/services/info">
+            <button className="btn-new-service">
+              + Nuevo Servicio
+            </button>
+          </Link>
+        :
+          ""
+        }
       </div>
       <section className="filters-section">
         <form onSubmit={handleSubmit(handleFilterSubmit)}>
@@ -181,7 +185,7 @@ export default function ServicesPage() {
               register={register}
               placeholder="Número de guía"
             />
-            {(user.clientId == 0) ? 
+            {(user?.clientId == 0) ? 
               <TextInput
                 label="Cliente"
                 name="clinname"

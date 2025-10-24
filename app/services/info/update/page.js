@@ -12,7 +12,6 @@ import SpinnerCentral from "@/components/recursos/spinnerCentral";
 import AddItemsPopup from "@/components/recursos/addItemsPopup";
 import { useRouter } from "next/navigation";
 import { getCurrentDate, getMinDate,getMaxDate, formatDate, formatDateYMD } from "@/utils/tools";
-import { useSelector } from 'react-redux';
 import useAuthGuard from "@/hooks/useAuthGuard";
 
 import "./style.sass";
@@ -59,10 +58,11 @@ let itemsTypels = [
 ]
 
 export default function NuevoServicio() {
+  const {user, checked } = useAuthGuard()
+
   useThemeByHour();
-  useAuthGuard(true);
+  
   const router = useRouter();
-  const {user} = useSelector((state) => state.auth);
 
   const [serviceId, setServiceId] = useState(null);
   const [selectedService, setSelectedService] = useState([]);
@@ -191,6 +191,8 @@ export default function NuevoServicio() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedService.data, reset]);
   
+  if (!checked) return null 
+
   return (
     <div className="info-content">
       <SpinnerCentral visible={loading || rspnService.loading} />
