@@ -71,7 +71,6 @@ export default function NuevoServicio() {
     const params = new URLSearchParams(window.location.search);
     const srvc = params.get('serv');
     if (srvc) {
-      console.log('srvc: ',srvc);
       setServiceId(srvc);
     }
   }, []);
@@ -164,13 +163,10 @@ export default function NuevoServicio() {
   }, [serviceId])
   
   useEffect(() => {
-    console.log('ussefect selectedService: ', selectedService);
-    
     if(!selectedService.data) return
     if (selectedService.data) {
       
       const servData = selectedService.data[0][0];
-      console.log('selectedService.data[0][0]: ', servData);
       const serv = {...servData, servDate: formatDateYMD(servData.servDate), servEtaDate: formatDateYMD(servData.servEtaDate)}       
       reset(serv);
       

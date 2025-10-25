@@ -1,9 +1,13 @@
 export async function useFetchData({ path, body = null, token = null, method = "GET" }) {
+  console.log('Entrando ');
+  
   try {
     const headers = { "Content-Type": "application/json" };
     if (token) headers["x-access-token"] = token;
 
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_ENDPOINT_AUTH}/${path}`, {
+    console.log('url: ', `${process.env.NEXT_PUBLIC_BASE_ENDPOINT_AUTH}${path}`);
+
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_ENDPOINT_AUTH}${path}`, {
       method,
       headers,
       body: body ? JSON.stringify(body) : null,

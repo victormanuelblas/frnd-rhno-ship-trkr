@@ -13,6 +13,9 @@ import TextInput from "@/components/recursos/textInput";
 import DateInput from "@/components/recursos/dateInput";
 import SelectInput from "@/components/recursos/selectInput";
 import useAuthGuard from "@/hooks/useAuthGuard";
+import { useDispatch, useSelector } from "react-redux";
+import { setClients } from "../store/clientSlice";
+import useFetchDdd from "@/hooks/useFetchDdd";
 
 const pageSize = 10;
 
@@ -51,6 +54,27 @@ const servStcnls = [
 export default function ServicesPage() {
   useThemeByHour();
   const {user, checked } = useAuthGuard()
+  const dispatch = useDispatch();
+  const { list: clients } = useSelector((state) => state.clients);
+
+  const hasClients = clients && clients.length > 0;
+
+    const [rspnClients] = useFetchDdd(
+    { path: 'clin'},
+    undefined,
+    "GET",
+    !hasClients,
+    () => {
+      let rslt = data
+      console.log('carga cliente', rslt);
+    }
+  );
+
+  useEffect(() => {
+    if (rspnClients.data && Array.isArray(rspnClients.data)) {
+      dispatch(setClients(rspnClients.data));
+    }
+  }, [rspnClients.data, dispatch]);
 
   const filtersRef = useRef({
     owner: 1,
@@ -83,11 +107,11 @@ export default function ServicesPage() {
   );
 
   useEffect(() => {
-    if(user?.clientId){
+    //if(user?.clientId){
       reload({
         queryParams: { ...filtersRef.current, pagenumb: 1 },
       });
-    }
+    //}
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -238,7 +262,7 @@ export default function ServicesPage() {
               {services.map((serv, i) => (
                 <tr key={i}>
                   <td>{formatDate(serv.servDate)}</td>
-                  {(user.clientId == 0) ? 
+                  {(user?.clientId == 0) ? 
                     <td>{serv.servClientName}</td>
                   :
                   ""
@@ -251,7 +275,7 @@ export default function ServicesPage() {
                   <td>{formatDate(serv.servDeliveredDate)}</td>
                   <td className="actions-cell">
                   {/* Editar */}
-                  {(user.clientId == 0) ? 
+                  {(user?.clientId == 0) ? 
                     <div className="tooltip-wrapper">
                       <Link href={`/services/info/update?serv=${serv.servId}`}>
                         <Pencil size={18} />

@@ -1,6 +1,7 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import HeaderInnova from "@/components/HeaderInnova";
+import FooterInnova from "@/components/FooterInnova";
 import "./layout.sass";
 import Providers from "./providers";
 
@@ -28,9 +29,7 @@ export default function RootLayout({ children }) {
             <main>
             {children}
             </main> 
-          <footer className="footer">
-            &copy; 2025 - rhinoseller - todos los derechos reservados.
-          </footer>
+          <FooterInnova />
         </Providers>
       </body>
     </html>

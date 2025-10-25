@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useDispatch, useSelector } from 'react-redux'
 import { useRouter } from 'next/navigation'
 import { logout } from '@/app/store/authSlice'
+import { clearClients } from '@/app/store/clientSlice'
 import './style.sass'
 
 export default function HeaderInnova() {
@@ -15,7 +16,8 @@ export default function HeaderInnova() {
   const { user, token } = useSelector((state) => state.auth)
 
   const handleLogout = () => {
-    dispatch(logout())
+    dispatch(logout());
+    dispatch(clearClients());
     router.push('/login')
   }
 

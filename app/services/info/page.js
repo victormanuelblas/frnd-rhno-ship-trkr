@@ -13,9 +13,8 @@ import SpinnerCentral from "@/components/recursos/spinnerCentral";
 import AddItemsPopup from "@/components/recursos/addItemsPopup";
 import Link from "next/link";
 import useAuthGuard from "@/hooks/useAuthGuard";
-
 import { getCurrentDate, getMinDate,getMaxDate, formatDate, formatDateYMD } from "@/utils/tools";
-
+import { useSelector } from "react-redux";
 import "./style.sass";
 
 let clientls = [
@@ -67,7 +66,7 @@ export default function NuevoServicio() {
   const serviceId = params?.["srvc"];
 
   const [origins, setOrigins] = useState(originls);
-  const [clients, setClients] = useState(clientls);
+  const [clients, setClients] = useState([]);
   const [delivereds, setDelivereds] = useState(deliveredls);
   const [itemsTypes, setItemsTypes] = useState(itemsTypels);
   
@@ -76,6 +75,18 @@ export default function NuevoServicio() {
   const [items, setItems] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
 
+  const { list: clientsListing } = useSelector((state) => state.clients);
+
+  useEffect(() => {
+    if (clientsListing && Array.isArray(clientsListing)) {
+      const formatted = clientsListing.map((item) => ({
+        value: item.clientId,
+        label: item.clienteName.trim(),
+      }));
+      setClients(formatted);
+    }
+  }, [clientsListing])
+  
   const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm({
     defaultValues: {
     servDate: getCurrentDate(),

@@ -34,7 +34,7 @@ export default function SelectInput({
         }}
       >
         <option value="">{placeholder}</option>
-        {options.map((opt) => (
+        {(options ?? []).map((opt) => (
           <option key={opt.value || opt.id} value={opt.value || opt.id}>
             {opt.label || opt.name}
           </option>

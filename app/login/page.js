@@ -1,7 +1,7 @@
 "use client";
 
 import "./style.sass";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { setCredentials } from "../store/authSlice";
@@ -17,15 +17,12 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // 🚫 Bloquea render hasta que el guard revise sesión
+  useEffect(() => {
+    if (user?.clientId) router.push("/");
+  }, [user]);
+  
   if (!checked) return null;
-
-  // ⏩ Si ya hay usuario logueado, redirige al dashboard
-  if (user?.clientId) {
-    router.replace("/"); 
-    return null;
-  }
-
+  
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };

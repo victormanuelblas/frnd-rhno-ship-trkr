@@ -78,7 +78,6 @@ export default function ServicioDetalle() {
   };
 
   const handleEventUpdated = (updatedStateId) => {
-    console.log('updatedStateId: ', updatedStateId);
     
     setService((prevService) => {
       if (!prevService) return prevService;
